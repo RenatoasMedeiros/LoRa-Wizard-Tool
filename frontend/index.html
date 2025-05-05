@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LoRa Smart Home Wizard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        /* Styles remain the same as lora_wizard_standard_html_v2 */
+        body { font-family: 'Inter', sans-serif; } .hidden { display: none; } pre[class*="language-"] { white-space: pre-wrap; word-wrap: break-word; max-height: 400px; overflow: auto; } *:focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; } label { margin-bottom: 0.25rem; display: block; } select, input[type=number], input[type=text] { padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 0.375rem; } .nested-options { margin-left: 1.5rem; margin-top: 0.5rem; padding-left: 1rem; border-left: 2px solid #e5e7eb; } .markdown-content { font-size: 0.875rem; line-height: 1.5; color: #d1d5db; } .markdown-content h3 { font-size: 1.1em; font-weight: 600; margin-top: 1em; margin-bottom: 0.5em; border-bottom: 1px solid #4b5563; padding-bottom: 0.2em; } .markdown-content h4 { font-size: 1em; font-weight: 600; margin-top: 0.8em; margin-bottom: 0.4em; } .markdown-content ul, .markdown-content ol { margin-left: 1.5em; margin-bottom: 1em; } .markdown-content li { margin-bottom: 0.25em; } .markdown-content p { margin-bottom: 0.75em; } .markdown-content code { background-color: #4b5563; padding: 0.1em 0.4em; border-radius: 4px; font-family: monospace; font-size: 0.9em; color: #f3f4f6; } .markdown-content pre { background-color: #1f2937; border: 1px solid #4b5563; border-radius: 5px; padding: 1em; overflow-x: auto; margin-bottom: 1em; } .markdown-content pre code { display: block; background-color: transparent; color: #d1d5db; padding: 0; border-radius: 0; font-size: 0.875rem; } .markdown-content a { color: #60a5fa; text-decoration: underline; } .markdown-content strong { color: #e5e7eb; } .copy-button { color: white; } .copy-button.bg-green-500 { color: white; } .copy-button.bg-red-500 { color: white; } .module-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem; } .hardware-multiline { white-space: pre-line; margin-left: 0.75rem; }
+        .artifact-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+        #artifacts-container { display: flex; flex-direction: column; gap: 1rem; }
+    </style>
+    <link rel="preconnect" href="https://rsms.me/">
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+</head>
+<body class="bg-gray-100 text-gray-800 p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto bg-white p-6 md:p-8 rounded-lg shadow-lg">
+        <h1 class="text-2xl md:text-3xl font-bold mb-6 text-center text-blue-700">LoRa Smart Home Setup Wizard</h1>
+        <div class="text-center mb-6">
+            <a href="/pro" class="text-sm text-blue-600 hover:text-blue-800 hover:underline">✨ Try the Pro Version (Experimental)</a>
+        </div>
+        <p class="mb-6 text-center text-gray-600">Answer a few questions to get personalized LoRa recommendations and starter code/instructions.</p>
+
+        <form id="lora-wizard-form" class="space-y-6">
+            <div><label for="region" class="block text-sm font-medium">1. Region</label><select id="region" name="region" class="mt-1 block w-full" required>{% for region_code in regions %} <option value="{{ region_code }}" {% if region_code == 'EU868' %}selected{% endif %}>{{ region_code }}</option> {% endfor %}</select><p class="mt-1 text-xs">Determines frequency band.</p></div>
+            <fieldset class="border p-4 rounded-md"><legend class="text-lg font-medium px-2">2. Environment</legend><div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4"><div><label for="size_sqm" class="block text-sm font-medium">Size (m²)</label><input type="number" id="size_sqm" name="size_sqm" min="10" max="10000" value="100" class="mt-1 block w-full" required></div><div><label for="floors" class="block text-sm font-medium">Floors</label><input type="number" id="floors" name="floors" min="1" max="10" value="1" class="mt-1 block w-full" required></div><div><label for="walls_internal" class="block text-sm font-medium">Internal Walls</label><input type="number" id="walls_internal" name="walls_internal" min="0" max="10" value="2" class="mt-1 block w-full" required></div><div><label for="wall_type" class="block text-sm font-medium">Wall Material</label><select id="wall_type" name="wall_type" class="mt-1 block w-full" required><option value="drywall">Drywall/Wood</option><option value="brick">Brick/Plaster</option><option value="concrete">Concrete</option></select></div></div></fieldset>
+            <fieldset class="border p-4 rounded-md"><legend class="text-lg font-medium px-2">3. Setup Goal</legend><div class="space-y-4 mt-4"><div><span class="block text-sm font-medium mb-1">Connection Type?</span><div class="flex flex-col sm:flex-row items-center space-x-4"><label class="inline-flex items-center"><input type="radio" name="network_type" value="multi_node" class="form-radio" checked><span class="ml-2">Multiple Sensors</span></label><label class="inline-flex items-center"><input type="radio" name="network_type" value="p2p" class="form-radio"><span class="ml-2">Point-to-Point</span></label></div></div><hr class="my-4"><div><span class="block text-sm font-medium mb-1">Have Gateway?</span><div class="flex items-center space-x-4"><label class="inline-flex items-center"><input type="radio" name="has_gateway" value="yes" required onchange="toggleGatewayOptions(false)"><span class="ml-2">Yes</span></label><label class="inline-flex items-center"><input type="radio" name="has_gateway" value="no" required checked onchange="toggleGatewayOptions(true)"><span class="ml-2">No</span></label></div></div><div id="gateway-options-section" class="space-y-4"><div><label for="gateway_approach" class="block text-sm font-medium">Gateway Plan?</label><select id="gateway_approach" name="gateway_approach" class="mt-1 block w-full"><option value="buy_easy">Buy Easy</option><option value="buy_configurable">Buy Configurable</option><option value="build_rpi">Build RPi</option><option value="build_esp32">Build ESP32</option><option value="build_other">Build Other</option></select></div><div id="existing-hardware-section" class="nested-options hidden"><span class="block text-sm font-medium mb-2">Own Build Components?</span><div class="space-y-2"><label class="inline-flex items-center"><input type="checkbox" name="existing_hw" value="rpi"><span class="ml-2">RPi</span></label><br><label class="inline-flex items-center"><input type="checkbox" name="existing_hw" value="esp32"><span class="ml-2">ESP32</span></label><br><label class="inline-flex items-center"><input type="checkbox" name="existing_hw" value="lora_module"><span class="ml-2">LoRa Module</span></label><br><label class="inline-flex items-center"><input type="checkbox" name="existing_hw" value="other_sbc"><span class="ml-2">Other SBC</span></label></div></div></div></div></fieldset>
+            <fieldset class="border p-4 rounded-md"><legend class="text-lg font-medium px-2">4. Existing Modules</legend><p class="text-sm text-gray-600 mb-3">Check modules you own.</p><div id="owned-modules-section" class="module-grid"><label class="inline-flex items-center p-2 border rounded-md hover:bg-gray-50"><input type="checkbox" name="owned_modules" value="rfm95w" class="mr-2"><span class="text-sm">RFM95W</span></label><label class="inline-flex items-center p-2 border rounded-md hover:bg-gray-50"><input type="checkbox" name="owned_modules" value="heltec_wifi_lora_v2" class="mr-2"><span class="text-sm">Heltec V2</span></label><label class="inline-flex items-center p-2 border rounded-md hover:bg-gray-50"><input type="checkbox" name="owned_modules" value="heltec_wifi_lora_v3" class="mr-2"><span class="text-sm">Heltec V3</span></label><label class="inline-flex items-center p-2 border rounded-md hover:bg-gray-50"><input type="checkbox" name="owned_modules" value="ttgo_lora32_v2" class="mr-2"><span class="text-sm">TTGO V2.x</span></label><label class="inline-flex items-center p-2 border rounded-md hover:bg-gray-50"><input type="checkbox" name="owned_modules" value="m5stack_lora" class="mr-2"><span class="text-sm">M5Stack LoRa</span></label><label class="inline-flex items-center p-2 border rounded-md hover:bg-gray-50"><input type="checkbox" name="owned_modules" value="dragino_lora_shield" class="mr-2"><span class="text-sm">Dragino Shield</span></label><label class="inline-flex items-center p-2 border rounded-md hover:bg-gray-50"><input type="checkbox" name="owned_modules" value="rak4631" class="mr-2"><span class="text-sm">RAK4631</span></label><label class="inline-flex items-center p-2 border rounded-md hover:bg-gray-50"><input type="checkbox" name="owned_modules" value="rak3172" class="mr-2"><span class="text-sm">RAK3172</span></label><label class="inline-flex items-center p-2 border rounded-md hover:bg-gray-50"><input type="checkbox" name="owned_modules" value="seeed_lora_e5" class="mr-2"><span class="text-sm">Seeed E5</span></label><label class="inline-flex items-center p-2 border rounded-md hover:bg-gray-50"><input type="checkbox" name="owned_modules" value="adafruit_feather_lora" class="mr-2"><span class="text-sm">Feather LoRa</span></label></div></fieldset>
+            <div class="text-center pt-4"> <button type="submit" id="submit-button" class="inline-flex justify-center py-2 px-6 border rounded-md text-lg font-medium text-white bg-blue-600 hover:bg-blue-700">Generate Recommendations</button> <p id="loading-indicator" class="mt-2 hidden">Generating...</p> <p id="error-message" class="mt-2 text-red-600 hidden"></p> </div>
+         </form>
+
+        <div id="results-section" class="mt-10 hidden space-y-6">
+            <h2 class="text-2xl font-semibold text-center text-green-700">Your LoRa Recommendations</h2>
+            <div class="bg-gray-50 p-4 rounded-md border"><h3 class="text-lg font-medium mb-2">Network Layout Tips</h3><ul id="layout-results" class="list-disc list-inside space-y-1"></ul></div>
+            <div class="bg-gray-50 p-4 rounded-md border"><h3 class="text-lg font-medium mb-2">Hardware Suggestions</h3><div id="hardware-results" class="space-y-1"></div><p class="mt-2 text-xs">Research specific models.</p></div>
+            <div class="bg-gray-50 p-4 rounded-md border">
+                <h3 class="text-lg font-medium mb-2">Recommended LoRa Parameters</h3>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y">
+                        <tbody id="parameters-results" class="bg-white divide-y"></tbody>
+                    </table>
+                </div>
+
+                <div id="parameter-summary" class="mt-3 text-sm space-y-1">
+                    </div>
+
+                <div class="mt-3 border-t pt-3">
+                     <button id="toggle-details-button" type="button" class="text-sm text-blue-600 hover:underline focus:outline-none">
+                         Show Calculation Details &raquo;
+                     </button>
+                     <div id="parameter-notes" class="mt-2 text-xs space-y-1 hidden">
+                         </div>
+                </div>
+
+                <div class="mt-3 text-right border-t pt-2">
+                    <button id="export-json-button" class="text-sm text-blue-600 hover:underline">Export Config JSON</button>
+                </div>
+            </div>
+            <div class="space-y-4">
+                <h3 class="text-lg font-medium text-gray-900">Generated Artifacts</h3>
+                <div id="artifacts-container" class="space-y-4">
+                    <template id="artifact-template">
+                        <div class="artifact-card bg-gray-800 p-4 rounded-md border border-gray-600 relative">
+                            <div class="artifact-header">
+                                <h4 class="artifact-title text-md font-medium text-gray-200 inline-block">Artifact Title</h4>
+                                <button class="copy-button bg-gray-600 hover:bg-gray-500 text-xs py-1 px-2 rounded inline-block ml-2" data-target="">Copy</button>
+                            </div>
+                            <div class="artifact-content">
+                                <div class="code-container hidden"><pre class="rounded-md"><code class="language-cpp text-sm"></code></pre></div>
+                                <div class="markdown-content text-gray-200 hidden p-2"></div> </div>
+                            <p class="artifact-notes mt-2 text-xs text-gray-400"></p>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-clike.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+
+    <script src="/static/js/standard_wizard.js" defer></script>
+</body>
+</html>
