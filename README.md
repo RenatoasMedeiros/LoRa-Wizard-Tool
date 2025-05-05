@@ -1,6 +1,6 @@
 # LoRa Wizard
 
-A web-based wizard to help hobbyists and DIY enthusiasts configure LoRa parameters, get hardware suggestions, and generate starter code for their smart home or personal projects. Features include a standard wizard and an advanced "Pro" (But Free!) version with floor plan analysis and an integrated AI assistant (with Gemini).
+A web-based wizard to help hobbyists and DIY enthusiasts configure LoRa parameters, get hardware suggestions, and generate starter code for smart home projects with LoRa. Features include a standard wizard and an advanced "Pro" (But Free!) version with floor plan analysis and an integrated AI assistant (with Gemini).
 
 ## Features
 
