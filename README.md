@@ -8,7 +8,6 @@ A web-based wizard to help hobbyists and DIY enthusiasts configure LoRa paramete
     * Basic recommendations based on region, environment size, and setup goals.
     * Hardware suggestions for nodes and gateways.
     * Basic LoRa parameter calculation.
-    * Generates simple Arduino/ESP32 node code and receiver instructions.
 * **Pro Wizard (✨ Requires Google Gemini API Key ✨):**
     * **Interactive Floor Plan Editor:** Draw walls (drywall, brick, concrete) and visually place your gateway and sensor nodes.
     * **Advanced Parameter Calculation:** Estimates link margin based on floor plan layout, device placement, and wall types to suggest an optimal Spreading Factor (SF).
