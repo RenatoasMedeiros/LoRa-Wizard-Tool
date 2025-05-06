@@ -2,7 +2,7 @@
 import logging
 import math
 import os
-import json for potential future use, though not strictly needed now
+import json #for potential future use, though not strictly needed now
 # Import new module details from config
 from config import REGION_FREQUENCIES, HARDWARE_SUGGESTIONS, DEFAULT_LORA_PARAMS, LORA_MODULE_DETAILS
 
@@ -184,8 +184,8 @@ def _calculate_lora_params(environment_data, floorplan_data, region, frequency):
                 "tx_power_dbm": DEFAULT_LORA_PARAMS.get(f"default_tx_power_{region[:2].lower()}", DEFAULT_LORA_PARAMS['default_tx_power_other']), # Use regional default if possible
                 "preamble_length": DEFAULT_LORA_PARAMS['preamble_length'],
                 "sync_word": hex(DEFAULT_LORA_PARAMS['private_sync_word']),
-                "antenna_gain_dbi": DEFAULT_ANTENNA_GAIN_DBI * 2, (Tx + Rx gain)
-                "worst_link_margin_db": None, (No margin calculated)
+                "antenna_gain_dbi": DEFAULT_ANTENNA_GAIN_DBI * 2, #(Tx + Rx gain)
+                "worst_link_margin_db": None, #(No margin calculated)
                 "error_message": "Fallback due to missing gateway on plan."
             }
             params["_coding_rate_raw"] = DEFAULT_LORA_PARAMS['coding_rate_denominator']
